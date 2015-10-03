@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     EditText inputNumberPattern;
     EditText inputName;
     static final String STATE_NUMBER = "inputNumber";
+    static final String STATE_NAME = "inputName";
 
     private void SetupButtonEventHandler()
     {
@@ -22,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                inputNumberPattern = (EditText) findViewById(R.id.numberPattern);
+                inputNumberPattern = (EditText) findViewById(R.id.number);
                 RegexCaller.number = inputNumberPattern.getText().toString();
-                inputName = (EditText) findViewById(R.id.contactName);
+
+                inputName = (EditText) findViewById(R.id.name);
                 RegexCaller.name = inputName.getText().toString();
             }
         });
@@ -33,19 +36,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_main);
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             RegexCaller.number = savedInstanceState.getString(STATE_NUMBER);
+            RegexCaller.name = savedInstanceState.getString(STATE_NAME);
         }
 
-        if(RegexCaller.number !=null)
+        if(RegexCaller.number !=null && RegexCaller.name !=null)
         {
-            inputNumberPattern = (EditText)findViewById(R.id.numberPattern);
+            inputNumberPattern = (EditText)findViewById(R.id.number);
             inputNumberPattern.setText(RegexCaller.number);
 
-            inputName = (EditText)findViewById(R.id.contactName);
+            inputName = (EditText)findViewById(R.id.name);
             inputName.setText(RegexCaller.name);
         }
 
@@ -78,7 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putString(STATE_NUMBER, RegexCaller.number);
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(STATE_NUMBER, RegexCaller.number);
+        savedInstanceState.putString(STATE_NAME, RegexCaller.name);
+
     }
 }
