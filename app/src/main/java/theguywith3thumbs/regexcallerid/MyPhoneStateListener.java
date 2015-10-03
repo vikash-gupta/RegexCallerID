@@ -10,23 +10,25 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MyPhoneStateListener extends PhoneStateListener {
 
     private Context activityContext;
-    Context context; // Context to make Toast if required
     Intent i1;
     Toast toast = null;
     public MyPhoneStateListener(Context context)
     {
         activityContext = context;
-        /*i1 = new Intent(context, MainActivity.class);
+     /*   i1 = new Intent(context, IncomingCall.class);
         i1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         i1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);*/
     }
 
     public void onCallStateChanged(int state, String incomingNumber) {
-        Log.i("MyPhoneStateListener", "onCallStateChanged" +incomingNumber);
+        Log.i(Constants.AppNameForLogging, "onCallStateChanged" +incomingNumber);
 
         switch (state) {
             case TelephonyManager.CALL_STATE_IDLE:
@@ -38,24 +40,26 @@ public class MyPhoneStateListener extends PhoneStateListener {
                     toast.cancel();
                 break;
             case TelephonyManager.CALL_STATE_RINGING:
-                if(incomingNumber.contains(RegexCaller.number)) {
-                    String msg = RegexCaller.name + " is calling";
-                    toast = Toast.makeText(activityContext,msg, Toast.LENGTH_LONG);
-                    toast.show();
+                if(RegexCaller.number !=null)
+                {
+                    Pattern r = Pattern.compile(RegexCaller.number);
+
+                    Matcher m = r.matcher(incomingNumber);
+                    if (m.find()) {
+                        String msg = RegexCaller.name + " is calling";
+                        toast = Toast.makeText(activityContext, msg, Toast.LENGTH_LONG);
+                        toast.show();
+
+                      /*  try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        activityContext.startActivity(i1);*/
+                    }
                 }
 
                 break;
-
-                /*try {
-                    Toast toast = Toast.makeText(activityContext,
-                            "Going for sleep and activity will start", Toast.LENGTH_LONG);
-                    toast.show();
-                    Thread.sleep(3000);
-                    activityContext.startActivity(i1);
-                } catch (Exception e) {
-                    Log.i("Error",e.getLocalizedMessage());
-                }
-                break;*/
         }
     }
 

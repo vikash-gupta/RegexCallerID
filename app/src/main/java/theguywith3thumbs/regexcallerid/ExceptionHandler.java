@@ -56,10 +56,10 @@ public class ExceptionHandler implements
         errorReport.append(Build.VERSION.INCREMENTAL);
         errorReport.append(LINE_SEPARATOR);
 
-        //Intent intent = new Intent(myContext, ShowError.class);
-        //int123ent.putExtra("error", errorReport.toString());
-        //myContext.startActivity(intent);
-        Log.e("myAppTag",errorReport.toString());
+        /*Intent intent = new Intent(myContext, ShowError.class);
+        intent.putExtra("error", errorReport.toString());
+        myContext.startActivity(intent);*/
+        Log.e(Constants.AppNameForLogging,errorReport.toString());
 
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);
